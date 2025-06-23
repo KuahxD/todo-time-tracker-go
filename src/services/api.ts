@@ -31,14 +31,31 @@ class ApiService {
       ...options,
     };
 
+    console.log('Making request to:', url, 'with config:', config);
+    
     const response = await fetch(url, config);
     
+    console.log('Response status:', response.status);
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+    
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Network error' }));
-      throw new Error(error.error || `HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Error response body:', errorText);
+      
+      let error;
+      try {
+        const errorJson = JSON.parse(errorText);
+        error = errorJson.error || errorText;
+      } catch {
+        error = errorText || `HTTP error! status: ${response.status}`;
+      }
+      
+      throw new Error(error);
     }
 
-    return response.json();
+    const responseData = await response.json();
+    console.log('Response data:', responseData);
+    return responseData;
   }
 
   async signup(user: User): Promise<AuthResponse> {
@@ -64,12 +81,20 @@ class ApiService {
   }
 
   async createTodo(token: string, todo: Omit<Todo, 'id'>): Promise<Todo> {
+    // Ensure the request body matches exactly what the Go backend expects
+    const requestBody = {
+      body: todo.body.trim(), // Ensure body is trimmed
+      completed: todo.completed,
+    };
+    
+    console.log('Creating todo with body:', requestBody);
+    
     return this.request<Todo>('/api/todos', {
       method: 'POST',
       headers: {
         Authorization: token,
       },
-      body: JSON.stringify(todo),
+      body: JSON.stringify(requestBody),
     });
   }
 
