@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { apiService } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
-import { LogIn, Loader2 } from 'lucide-react';
+import { LogIn, Loader2, User } from 'lucide-react';
 
 interface LoginProps {
   onAuth: (token: string) => void;
@@ -49,6 +49,15 @@ export const Login: React.FC<LoginProps> = ({ onAuth, onToggle }) => {
     }
   };
 
+  const handleDemoLogin = () => {
+    setUsername('demo');
+    setPassword('demo123');
+    toast({
+      title: "Demo credentials loaded",
+      description: "You can now click 'Sign In' or create this demo user if it doesn't exist yet.",
+    });
+  };
+
   return (
     <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="text-center pb-4">
@@ -58,6 +67,18 @@ export const Login: React.FC<LoginProps> = ({ onAuth, onToggle }) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="mb-4">
+          <Button 
+            onClick={handleDemoLogin}
+            variant="outline"
+            className="w-full border-blue-200 text-blue-600 hover:bg-blue-50"
+            disabled={isLoading}
+          >
+            <User className="mr-2 h-4 w-4" />
+            Use Demo Credentials
+          </Button>
+        </div>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="username" className="text-sm font-medium text-gray-700">
@@ -111,6 +132,12 @@ export const Login: React.FC<LoginProps> = ({ onAuth, onToggle }) => {
           >
             Sign up
           </button>
+        </div>
+        
+        <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-xs text-blue-600 text-center">
+            💡 Click "Use Demo Credentials" then "Sign up" if this is your first time, or "Sign In" if you've used the demo before.
+          </p>
         </div>
       </CardContent>
     </Card>

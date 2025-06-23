@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { apiService } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
-import { UserPlus, Loader2 } from 'lucide-react';
+import { UserPlus, Loader2, User } from 'lucide-react';
 
 interface SignupProps {
   onAuth: (token: string) => void;
@@ -58,6 +58,15 @@ export const Signup: React.FC<SignupProps> = ({ onAuth, onToggle }) => {
     }
   };
 
+  const handleDemoSignup = () => {
+    setUsername('demo');
+    setPassword('demo123');
+    toast({
+      title: "Demo credentials loaded",
+      description: "You can now click 'Create Account' to create the demo user.",
+    });
+  };
+
   return (
     <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="text-center pb-4">
@@ -67,6 +76,18 @@ export const Signup: React.FC<SignupProps> = ({ onAuth, onToggle }) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="mb-4">
+          <Button 
+            onClick={handleDemoSignup}
+            variant="outline"
+            className="w-full border-purple-200 text-purple-600 hover:bg-purple-50"
+            disabled={isLoading}
+          >
+            <User className="mr-2 h-4 w-4" />
+            Use Demo Credentials
+          </Button>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="username" className="text-sm font-medium text-gray-700">
@@ -120,6 +141,12 @@ export const Signup: React.FC<SignupProps> = ({ onAuth, onToggle }) => {
           >
             Sign in
           </button>
+        </div>
+
+        <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+          <p className="text-xs text-purple-600 text-center">
+            💡 Demo credentials: username "demo", password "demo123"
+          </p>
         </div>
       </CardContent>
     </Card>
