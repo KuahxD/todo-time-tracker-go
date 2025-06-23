@@ -75,15 +75,14 @@ class ApiService {
   async getTodos(token: string): Promise<Todo[]> {
     return this.request<Todo[]>('/api/todos', {
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
 
   async createTodo(token: string, todo: Omit<Todo, 'id'>): Promise<Todo> {
-    // Ensure the request body matches exactly what the Go backend expects
     const requestBody = {
-      body: todo.body.trim(), // Ensure body is trimmed
+      body: todo.body.trim(),
       completed: todo.completed,
     };
     
@@ -92,7 +91,7 @@ class ApiService {
     return this.request<Todo>('/api/todos', {
       method: 'POST',
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(requestBody),
     });
@@ -102,7 +101,7 @@ class ApiService {
     return this.request<{ success: boolean }>(`/api/todos/${id}`, {
       method: 'PATCH',
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -111,7 +110,7 @@ class ApiService {
     return this.request<{ success: boolean }>(`/api/todos/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
