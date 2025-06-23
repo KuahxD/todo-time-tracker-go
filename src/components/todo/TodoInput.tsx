@@ -26,31 +26,32 @@ export const TodoInput: React.FC<TodoInputProps> = ({ onAddTodo }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex space-x-3">
-      <div className="flex-1">
+    <div>
+      <h2 className="text-lg font-semibold text-gray-900 mb-4">Add New Task</h2>
+      <form onSubmit={handleSubmit} className="flex gap-3">
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Add a new task..."
-          className="text-base h-12 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          placeholder="What needs to be done?"
+          className="flex-1 h-11 text-base"
           disabled={isSubmitting}
           maxLength={200}
         />
-      </div>
-      <Button 
-        type="submit" 
-        disabled={!input.trim() || isSubmitting}
-        className="h-12 px-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isSubmitting ? (
-          <Loader2 className="h-5 w-5 animate-spin" />
-        ) : (
-          <>
-            <Plus className="h-5 w-5 mr-2" />
-            Add Task
-          </>
-        )}
-      </Button>
-    </form>
+        <Button 
+          type="submit" 
+          disabled={!input.trim() || isSubmitting}
+          className="h-11 px-6 bg-blue-600 hover:bg-blue-700"
+        >
+          {isSubmitting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <>
+              <Plus className="h-4 w-4 mr-2" />
+              Add
+            </>
+          )}
+        </Button>
+      </form>
+    </div>
   );
 };

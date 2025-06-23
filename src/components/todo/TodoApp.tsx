@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { TodoList } from './TodoList';
 import { TodoInput } from './TodoInput';
-import { TodoHeader } from './TodoHeader';
 import { apiService, Todo } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
+import { LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface TodoAppProps {
   token: string;
@@ -19,7 +20,6 @@ export const TodoApp: React.FC<TodoAppProps> = ({ token, onLogout }) => {
   const fetchTodos = async () => {
     try {
       const fetchedTodos = await apiService.getTodos(token);
-      // Handle the case where API returns null
       setTodos(fetchedTodos || []);
     } catch (error) {
       console.error('Error fetching todos:', error);
@@ -28,7 +28,6 @@ export const TodoApp: React.FC<TodoAppProps> = ({ token, onLogout }) => {
         description: "Failed to load todos",
         variant: "destructive",
       });
-      // Set empty array on error to prevent filter issues
       setTodos([]);
     } finally {
       setIsLoading(false);
@@ -85,7 +84,7 @@ export const TodoApp: React.FC<TodoAppProps> = ({ token, onLogout }) => {
       setTodos(prev => prev.filter(todo => todo.id !== id));
       toast({
         title: "Todo removed",
-        description: "Task has been moved to your archive.",
+        description: "Task has been deleted.",
       });
     } catch (error) {
       console.error('Error deleting todo:', error);
@@ -101,19 +100,68 @@ export const TodoApp: React.FC<TodoAppProps> = ({ token, onLogout }) => {
   const totalCount = todos.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <TodoHeader 
-        onLogout={onLogout} 
-        completedCount={completedCount}
-        totalCount={totalCount}
-      />
-      
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border-0 overflow-hidden">
-          <div className="p-6 border-b border-gray-100">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Todo Gopher</h1>
+            <p className="text-sm text-gray-600">Manage your tasks efficiently</p>
+          </div>
+          <Button 
+            onClick={onLogout}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-sm border">
+          {/* Stats */}
+          <div className="px-6 py-4 border-b bg-gray-50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">{totalCount}</div>
+                  <div className="text-xs text-gray-600">Total</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">{completedCount}</div>
+                  <div className="text-xs text-gray-600">Completed</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-orange-600">{totalCount - completedCount}</div>
+                  <div className="text-xs text-gray-600">Pending</div>
+                </div>
+              </div>
+              {totalCount > 0 && (
+                <div className="flex items-center gap-2">
+                  <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-green-500 transition-all duration-300"
+                      style={{ width: `${(completedCount / totalCount) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-medium text-gray-600">
+                    {Math.round((completedCount / totalCount) * 100)}%
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Add Todo Form */}
+          <div className="p-6 border-b">
             <TodoInput onAddTodo={handleAddTodo} />
           </div>
-          
+
+          {/* Todo List */}
           <div className="p-6">
             <TodoList
               todos={todos}
@@ -123,14 +171,6 @@ export const TodoApp: React.FC<TodoAppProps> = ({ token, onLogout }) => {
             />
           </div>
         </div>
-        
-        {totalCount > 0 && (
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500">
-              {totalCount - completedCount} pending • {completedCount} completed • Limit: 20 active todos
-            </p>
-          </div>
-        )}
       </main>
     </div>
   );
