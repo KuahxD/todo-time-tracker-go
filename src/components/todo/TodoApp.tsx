@@ -19,7 +19,8 @@ export const TodoApp: React.FC<TodoAppProps> = ({ token, onLogout }) => {
   const fetchTodos = async () => {
     try {
       const fetchedTodos = await apiService.getTodos(token);
-      setTodos(fetchedTodos);
+      // Handle the case where API returns null
+      setTodos(fetchedTodos || []);
     } catch (error) {
       console.error('Error fetching todos:', error);
       toast({
@@ -27,6 +28,8 @@ export const TodoApp: React.FC<TodoAppProps> = ({ token, onLogout }) => {
         description: "Failed to load todos",
         variant: "destructive",
       });
+      // Set empty array on error to prevent filter issues
+      setTodos([]);
     } finally {
       setIsLoading(false);
     }
