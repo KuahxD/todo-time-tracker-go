@@ -79,23 +79,17 @@ class ApiService {
       },
     });
   }
-
-  async createTodo(token: string, todo: Omit<Todo, 'id'>): Promise<Todo> {
-    const requestBody = {
-      body: todo.body.trim(),
-      completed: todo.completed,
-    };
-    
-    console.log('Creating todo with body:', requestBody);
-    
-    return this.request<Todo>('/api/todos', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-  }
+  async createTodo(token,body1) {
+  const res = await fetch("http://localhost:5000/api/todos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({ body: body1.body })
+  });
+  return await res.json();
+}
 
   async updateTodo(token: string, id: string): Promise<{ success: boolean }> {
     return this.request<{ success: boolean }>(`/api/todos/${id}`, {
