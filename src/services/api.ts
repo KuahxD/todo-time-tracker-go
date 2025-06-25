@@ -1,5 +1,5 @@
 
-const API_BASE_URL = 'https://go-practice-projects-1.onrender.com/';
+const API_BASE_URL = 'https://go-practice-projects-1.onrender.com';
 
 export interface Todo {
   id?: string;
