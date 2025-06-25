@@ -1,5 +1,5 @@
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://go-practice-projects-1.onrender.com/';
 
 export interface Todo {
   id?: string;
@@ -80,7 +80,7 @@ class ApiService {
     });
   }
   async createTodo(token,body1) {
-  const res = await fetch("http://localhost:5000/api/todos", {
+  const res = await fetch("", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
